@@ -11,7 +11,7 @@
     "name name name surname surname surname"
     "email email education education education education"
     "location location location location age age"
-    "hobbies hobbies hobbies hobbies hobbies hobbies"
+    "hobbies hobbies hobbies . . ."
     "phone phone phone phone phone phone"
     "code number number number . ."
     "btn btn . . . .";
@@ -88,9 +88,23 @@
 
 .field {
   margin-top: 10px;
+  position: relative;
 }
 .field span {
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
   color: rgb(86, 93, 97);
-  margin-left: 10px;
-  cursor: pointer;
+}
+
+.form input[type="text"] {
+  width: 100%;
+}
+.form select {
+  width: 100%;
+}
+.error {
+  color: red;
+  font-size: 12px;
 }

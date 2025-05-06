@@ -5,37 +5,65 @@ import { useDispatch, useSelector } from "react-redux";
 import { add, edit } from "../../store/slices/entitiesSlice";
 import { useNavigate } from "react-router";
 import { Select } from "./Select";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export const Entity = ({ editId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const schema = yup.object().shape({
+    name: yup.string().max(10).required(),
+    surname: yup.string().max(10).required(),
+    email: yup.string().email(),
+    location: yup.string().required(),
+    age: yup.string().required(),
+    education: yup.string().required(),
+    hobbies: yup.array().of(
+      yup.object().shape({
+        value: yup.string().required(),
+      })
+    ),
+    phoneNumber: yup.object().shape({
+      number: yup.string().matches(/^\d{0,9}$/, {
+        message: "Invalid phone number",
+      }),
+    }),
+  });
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
     control,
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   const { fields, append, remove } = useFieldArray({
     name: "hobbies",
     control,
   });
 
-  const entity =
-    useSelector((state) =>
-      state.entities.data.find((elem) => elem.id == editId)
-    ) || {};
+  const entity = useSelector((state) =>
+    state.entities.data.find((elem) => elem.id == editId)
+  ) || {
+    phoneNumber: {
+      code: "0",
+    },
+  };
 
   const onSubmit = (data) => {
     editId ? dispatch(edit({ id: editId, data })) : dispatch(add(data));
     navigate("/");
   };
-  const [isRadioBtnClicked, setIsRadioBtnClicked] = useState(
-    entity.phone === "on" ? true : false
+  const [isPhoneNumber, setIsPhoneNumber] = useState(
+    entity.isPhoneNumber === "on" ? true : false
   );
 
   const handleRadioBtnClick = () => {
-    setIsRadioBtnClicked((prev) => !prev);
+    setIsPhoneNumber((prev) => !prev);
   };
   const handleAddHobbyClick = () => {
     append({ value: `Hobby ${fields.length}` });
@@ -51,35 +79,36 @@ export const Entity = ({ editId }) => {
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <h1 className={styles.title}>Enter...</h1>
-      <input
-        type="text"
-        className={styles.name}
-        {...register("name")}
-        placeholder="name"
-      />
-      <input
-        type="text"
-        className={styles.surname}
-        {...register("surname")}
-        placeholder="surname"
-      />
-      <input
-        type="text"
-        className={styles.email}
-        {...register("email")}
-        placeholder="email"
-      />
-      <input
-        type="text"
-        className={styles.location}
-        {...register("location")}
-        placeholder="location"
-      />
+      <div className={styles.name}>
+        <input type="text" {...register("name")} placeholder="name" />
+        <span className={styles.error}>
+          {errors.name && errors.name.message}
+        </span>
+      </div>
+      <div className={styles.surname}>
+        <input type="text" {...register("surname")} placeholder="surname" />
+        <span className={styles.error}>
+          {errors.surname && errors.surname.message}
+        </span>
+      </div>
+      <div className={styles.email}>
+        <input type="text" {...register("email")} placeholder="email" />
+        <span className={styles.error}>
+          {errors.email && errors.email.message}
+        </span>
+      </div>
+      <div className={styles.location}>
+        <input type="text" {...register("location")} placeholder="location" />
+        <span className={styles.error}>
+          {errors.location && errors.location.message}
+        </span>
+      </div>
       <Select
         className={styles.age}
         {...register("age")}
         placeholder="age"
         options={["18-25", "26-35", "36-50", "51+"]}
+        errors={errors}
       />
       <Select
         className={styles.education}
@@ -91,11 +120,12 @@ export const Entity = ({ editId }) => {
           "Further Education",
           "Higher Education",
         ]}
+        errors={errors}
       />
       <div className={styles.phone}>
         <input
           type="radio"
-          {...register("phone")}
+          {...register("isPhoneNumber")}
           id="phone"
           style={{ marginRight: "5px" }}
           onChange={handleRadioBtnClick}
@@ -119,23 +149,32 @@ export const Entity = ({ editId }) => {
                 {...register(`hobbies.${index}.value`)}
               ></input>
               <span onClick={() => handleRemoveHobbyClick(index)}>x</span>
+              <span className={styles.error}>
+                {errors.hobbies &&
+                  errors.hobbies[index] &&
+                  errors.hobbies[index].message}
+              </span>
             </div>
           );
         })}
       </div>
-      {isRadioBtnClicked && (
+      {isPhoneNumber && (
         <>
           <Select
-            {...register("code")}
+            {...register("phoneNumber.code")}
             className={styles.code}
             placeholder="code"
             options={["+375", "+7", "+381"]}
+            errors={errors}
           />
-          <input
-            type="text"
-            {...register("number")}
-            className={styles.number}
-          />
+          <div className={styles.number}>
+            <input type="text" {...register("phoneNumber.number")} />
+            <span className={styles.error}>
+              {errors.phoneNumber &&
+                errors.phoneNumber.number &&
+                errors.phoneNumber.number.message}
+            </span>
+          </div>
         </>
       )}
       <button type="submit" className={styles.btn}>

@@ -9,9 +9,12 @@ const initialState = {
     education: 'higher',
     location: 'Minsk',
     age: '18-25',
-    phone: 'on',
-    code: '+375',
-    number: '44111111'
+    isPhoneNumber: 'on',
+    phoneNumber: {
+      code: '+375',
+      number: '44111111'
+    }
+
   },
   {
     id: 2,
@@ -21,9 +24,11 @@ const initialState = {
     education: 'primary',
     location: 'Minsk',
     age: '51+',
-    phone: 'on',
-    code: '+7',
-    number: '291808700'
+    isPhoneNumber: 'on',
+    phoneNumber: {
+      code: '+7',
+      number: '291808700'
+    }
   }]
 };
 

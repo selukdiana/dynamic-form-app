@@ -15,7 +15,11 @@ export const EntityRow = ({ entity }) => {
       <td>{entity.education}</td>
       <td>{entity.location}</td>
       <td>{entity.age}</td>
-      <td>{`${entity.code || ""} ${entity.number || ""}`}</td>
+      <td>
+        {entity.isPhoneNumber === "on"
+          ? `${entity.phoneNumber.code} ${entity.phoneNumber.number}`
+          : "-"}
+      </td>
       <td
         onClick={() => changeEntityRowClickHandler(entity.id)}
         style={{ width: "1%" }}
