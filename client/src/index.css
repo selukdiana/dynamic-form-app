@@ -9,7 +9,7 @@
 }
 
 html {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 16px;
 }
 
@@ -20,4 +20,16 @@ body {
   padding: 0 15px;
   margin: auto;
   width: auto;
+}
+
+input,
+select {
+  outline: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  color: #1b1f23;
+}
+option {
+  color: #1b1f23;
 }
