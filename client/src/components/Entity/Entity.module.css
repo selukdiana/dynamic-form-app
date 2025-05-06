@@ -1,0 +1,96 @@
+.form {
+  display: grid;
+  width: 500px;
+  margin: auto;
+  margin-top: 200px;
+  grid-template-columns: repeat(6, 1fr);
+  /* grid-template-rows: repeat(8, max-content); */
+  grid-auto-rows: max-content;
+  grid-template-areas:
+    "title title title title title title"
+    "name name name surname surname surname"
+    "email email education education education education"
+    "location location location location age age"
+    "hobbies hobbies hobbies hobbies hobbies hobbies"
+    "phone phone phone phone phone phone"
+    "code number number number . ."
+    "btn btn . . . .";
+  row-gap: 20px;
+  column-gap: 10px;
+  background-color: rgb(255, 240, 251);
+  padding: 40px 10px;
+  border-radius: 4px;
+}
+
+.title {
+  grid-area: title;
+  color: rgb(56, 59, 61);
+}
+.name {
+  grid-area: name;
+}
+
+.surname {
+  grid-area: surname;
+}
+
+.email {
+  grid-area: email;
+}
+.education {
+  grid-area: education;
+}
+
+.location {
+  grid-area: location;
+}
+
+.age {
+  grid-area: age;
+}
+.btn {
+  grid-area: btn;
+  border-radius: 2px;
+  border: none;
+  background-color: rgb(86, 93, 97);
+  padding: 5px;
+  cursor: pointer;
+}
+
+.phone {
+  grid-area: phone;
+  display: flex;
+  align-items: center;
+}
+
+.code {
+  grid-area: code;
+}
+.number {
+  grid-area: number;
+}
+
+.hobbies {
+  grid-area: hobbies;
+}
+
+.hobbiesHeader {
+  display: flex;
+  gap: 10px;
+}
+.hobbiesHeader button {
+  padding: 2px 5px;
+  border-radius: 2px;
+  border: none;
+  background-color: rgb(86, 93, 97);
+  cursor: pointer;
+}
+
+.field {
+  margin-top: 10px;
+}
+.field span {
+  color: rgb(86, 93, 97);
+  margin-left: 10px;
+  cursor: pointer;
+}
