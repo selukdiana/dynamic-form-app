@@ -1,0 +1,14 @@
+.row {
+  background-color: rgb(61, 58, 58);
+}
+
+td {
+  padding: 5px;
+}
+.icon:hover {
+  fill: pink;
+  transform: scale(1.1);
+}
+.icon {
+  cursor: pointer;
+}
