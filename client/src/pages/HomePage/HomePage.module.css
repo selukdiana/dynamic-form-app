@@ -1,0 +1,30 @@
+.table {
+  border: none;
+  margin-top: 10px;
+}
+.content {
+  width: 800px;
+  padding-top: 100px;
+  margin: 0 auto;
+}
+
+thead {
+  background-color: rgb(255, 240, 251);
+}
+th {
+  color: slategrey;
+  text-align: left;
+  padding: 5px;
+}
+.btn {
+  margin-left: auto;
+  display: block;
+  margin-top: 20px;
+  padding: 0 10px;
+  border: none;
+  color: slategray;
+  cursor: pointer;
+  font-size: 24px;
+  background-color: rgb(255, 240, 251);
+  border-radius: 3px;
+}
