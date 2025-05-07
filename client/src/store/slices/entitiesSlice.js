@@ -22,9 +22,9 @@ export const updateEntity = createAsyncThunk('entities/updateEntity', async ({ i
   return respData
 })
 
-export const createEntity = createAsyncThunk('entities/updateEntity', async (data) => {
+export const createEntity = createAsyncThunk('entities/createEntity', async (data) => {
   const response = await fetch(`http://localhost:8080/api/entity`, {
-    method: 'post',
+    method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
