@@ -1,50 +1,52 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  data: [{
-    id: 1,
-    name: 'Diana',
-    surname: 'Selyuk',
-    email: 'aa@gmail.com',
-    education: 'higher',
-    location: 'Minsk',
-    age: '18-25',
-    isPhoneNumber: 'on',
-    phoneNumber: {
-      code: '+375',
-      number: '44111111'
-    }
-
-  },
-  {
-    id: 2,
-    name: 'Vasya',
-    surname: 'Pupkin',
-    email: '123gj@gmail.com',
-    education: 'primary',
-    location: 'Minsk',
-    age: '51+',
-    isPhoneNumber: 'on',
-    phoneNumber: {
-      code: '+7',
-      number: '291808700'
-    }
-  }]
+  data: []
 };
+
+export const getAllEntities = createAsyncThunk('entities/allEntities', async () => {
+  const response = await fetch('http://localhost:8080/api/entities');
+  const data = await response.json()
+  return data
+})
+
+export const updateEntity = createAsyncThunk('entities/updateEntity', async ({ id, data }) => {
+  const response = await fetch(`http://localhost:8080/api/entity/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const respData = await response.json()
+  return respData
+})
+
+export const createEntity = createAsyncThunk('entities/updateEntity', async (data) => {
+  const response = await fetch(`http://localhost:8080/api/entity`, {
+    method: 'post',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const respData = await response.json()
+  return respData
+})
+
 
 const entitiesSlice = createSlice({
   name: "entities",
   initialState: initialState,
-  reducers: {
-    add: (state, action) => {
-      state.data.push({ ...action.payload, id: state.data.length + 1 })
-    },
-    edit: (state, action) => {
-      const index = state.data.findIndex(elem => elem.id == action.payload.id);
-      state.data[index] = action.payload.data;
-    }
-  },
+  extraReducers: (builder) => {
+    builder.addCase(getAllEntities.fulfilled, (state, action) => {
+      state.data = action.payload
+    })
+    builder.addCase(getAllEntities.rejected, (state) => {
+      state.data = []
+    })
+  }
 });
 
 export default entitiesSlice.reducer;
-export const { add, edit } = entitiesSlice.actions
