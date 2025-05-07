@@ -2,7 +2,7 @@ import styles from "./Entity.module.css";
 import { useFieldArray, useForm } from "react-hook-form";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { add, edit } from "../../store/slices/entitiesSlice";
+import { createEntity, updateEntity } from "../../store/slices/entitiesSlice";
 import { useNavigate } from "react-router";
 import { Select } from "./Select";
 import * as yup from "yup";
@@ -12,30 +12,44 @@ export const Entity = ({ editId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const entity = useSelector((state) =>
+    state.entities.data.find((elem) => elem.id == editId)
+  ) || {
+    phoneCodeId: "1",
+  };
+  const { ages, educations, codes } = useSelector((state) => state.data);
+  const [isPhoneNumber, setIsPhoneNumber] = useState(
+    entity.isPhoneNumber === "on" ? true : false
+  );
+
   const schema = yup.object().shape({
     name: yup.string().max(10).required(),
     surname: yup.string().max(10).required(),
     email: yup.string().email(),
     location: yup.string().required(),
-    age: yup.string().required(),
-    education: yup.string().required(),
-    hobbies: yup.array().of(
-      yup.object().shape({
-        value: yup.string().required(),
-      })
-    ),
-    phoneNumber: yup.object().shape({
-      number: yup.string().matches(/^\d{0,9}$/, {
+    ageId: yup.string().required(),
+    educationId: yup.string().required(),
+    hobbies: yup
+      .array()
+      .of(
+        yup.object().shape({
+          value: yup.string(),
+        })
+      )
+      .nullable(true),
+    phoneNumber: yup
+      .string()
+      .matches(/^\d{0,9}$/, {
         message: "Invalid phone number",
-      }),
-    }),
+      })
+      .nullable(true),
   });
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, dirtyFields },
     control,
   } = useForm({
     resolver: yupResolver(schema),
@@ -46,22 +60,18 @@ export const Entity = ({ editId }) => {
     control,
   });
 
-  const entity = useSelector((state) =>
-    state.entities.data.find((elem) => elem.id == editId)
-  ) || {
-    phoneNumber: {
-      code: "0",
-    },
-  };
-
   const onSubmit = (data) => {
-    editId ? dispatch(edit({ id: editId, data })) : dispatch(add(data));
+    const result = {};
+    for (const key in dirtyFields) {
+      if (dirtyFields[key]) {
+        result[key] = data[key];
+      }
+    }
+    editId
+      ? dispatch(updateEntity({ id: editId, data: result }))
+      : dispatch(createEntity(data));
     navigate("/");
   };
-  const [isPhoneNumber, setIsPhoneNumber] = useState(
-    entity.isPhoneNumber === "on" ? true : false
-  );
-
   const handleRadioBtnClick = () => {
     setIsPhoneNumber((prev) => !prev);
   };
@@ -105,21 +115,16 @@ export const Entity = ({ editId }) => {
       </div>
       <Select
         className={styles.age}
-        {...register("age")}
+        {...register("ageId")}
         placeholder="age"
-        options={["18-25", "26-35", "36-50", "51+"]}
+        options={ages}
         errors={errors}
       />
       <Select
         className={styles.education}
-        {...register("education")}
+        {...register("educationId")}
         placeholder="education"
-        options={[
-          "Primary Education",
-          "Secondary Education",
-          "Further Education",
-          "Higher Education",
-        ]}
+        options={educations}
         errors={errors}
       />
       <div className={styles.phone}>
@@ -161,14 +166,14 @@ export const Entity = ({ editId }) => {
       {isPhoneNumber && (
         <>
           <Select
-            {...register("phoneNumber.code")}
+            {...register("phoneCodeId")}
             className={styles.code}
             placeholder="code"
-            options={["+375", "+7", "+381"]}
+            options={codes}
             errors={errors}
           />
           <div className={styles.number}>
-            <input type="text" {...register("phoneNumber.number")} />
+            <input type="text" {...register("phoneNumber")} />
             <span className={styles.error}>
               {errors.phoneNumber &&
                 errors.phoneNumber.number &&

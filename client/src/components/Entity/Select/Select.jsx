@@ -19,9 +19,9 @@ export const Select = forwardRef(
             Select your {name}
           </option>
           {options &&
-            options.map((value, index) => (
-              <option value={index} key={value}>
-                {value}
+            options.map((option) => (
+              <option value={option.id} key={option.id}>
+                {option.value}
               </option>
             ))}
         </select>
