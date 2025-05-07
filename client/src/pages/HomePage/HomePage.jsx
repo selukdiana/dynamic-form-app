@@ -1,15 +1,31 @@
 import styles from "./HomePage.module.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { EntityRow } from "../../components/EntityRow";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { getAllEntities } from "../../store/slices/entitiesSlice";
+import {
+  getAges,
+  getEducations,
+  getPhoneCodes,
+} from "../../store/slices/dataSlice";
 
 export const HomePage = () => {
-  const entities = useSelector((state) => state.entities.data);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const entities = useSelector((state) => state.entities.data);
   const handleAddBtnClick = () => {
     navigate("/entity");
   };
+
+  useEffect(() => {
+    dispatch(getAllEntities());
+    dispatch(getAges());
+    dispatch(getEducations());
+    dispatch(getPhoneCodes());
+  }, []);
+
   return (
     <section>
       <div className="container">
@@ -31,8 +47,11 @@ export const HomePage = () => {
               </tr>
             </thead>
             <tbody>
-              {entities.length &&
-                entities.map((entity) => <EntityRow entity={entity} />)}
+              {entities.length
+                ? entities.map((entity) => (
+                    <EntityRow entity={entity} key={entity.id} />
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
